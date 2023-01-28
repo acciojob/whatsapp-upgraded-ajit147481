@@ -11,6 +11,7 @@ public class WhatsappRepository {
     private HashMap<Group,List<User>> groupUserHashMap;
     private HashMap<Integer,Message> messageHashMap;
     private HashMap<Group,List<Message>> groupMessageHashMap;
+
     public WhatsappRepository(){
 
     }
@@ -35,15 +36,15 @@ public class WhatsappRepository {
     public Group createGroup(List<User> users) {
         Group group=new Group();
         group.setNumberOfParticipants(users.size());
-        if(users.size()<=2){
+        if(users.size()==2){
             group.setName(users.get(2).getName());
         }else{
             group.setName("Group "+users.size());
         }
+
         groupHashMap.put(group.getName(),group);
 
-        List<User> userList=new ArrayList<>();
-        groupUserHashMap.put(group,userList);
+        groupUserHashMap.put(group,users);
 
         List<Message> messageList=new ArrayList<>();
         groupMessageHashMap.put(group,messageList);
