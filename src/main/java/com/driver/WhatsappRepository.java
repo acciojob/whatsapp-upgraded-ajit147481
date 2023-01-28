@@ -66,81 +66,96 @@ public class WhatsappRepository {
     }
 
     public int sendMessage(Message message, User sender, Group group)throws Exception {
-        if(!groupHashMap.containsKey(group.getName())){
-            throw new Exception("Group does not exist");
-        }
-        List<User> userList=groupUserHashMap.get(group);
-
-        boolean isUser=false;
-        for(User user:userList){
-            if(sender==user){
-                isUser=true;
-                break;
+        try {
+            if(!groupHashMap.containsKey(group.getName())){
+                throw new Exception("Group does not exist");
             }
-        }
-        if(!isUser){
-            throw new Exception("You are not allowed to send message");
-        }
-        List<Message> messageList=groupMessageHashMap.get(group);
-        messageList.add(message);
+            List<User> userList=groupUserHashMap.get(group);
 
-        groupMessageHashMap.put(group,messageList);
-        return messageList.size()-1;
+             boolean isUser=false;
+             for(User user:userList){
+             if(sender==user){
+                     isUser=true;
+                     break;
+                 }
+            }
+            if(!isUser){
+                  throw new Exception("You are not allowed to send message");
+             }
+            List<Message> messageList=groupMessageHashMap.get(group);
+             messageList.add(message);
+
+             groupMessageHashMap.put(group,messageList);
+             return messageList.size()-1;
+        }
+        catch (Exception e){
+            return Integer.parseInt(null);
+        }
     }
 
     public String changeAdmin(User approver, User user, Group group)throws Exception {
-        if(!groupHashMap.containsKey(group.getName())){
-            throw new Exception("Group does not exist");
-        }
-        List<User> userList=groupUserHashMap.get(group);
-        if(approver!=userList.get(0)){
-            throw new Exception("Approver does not have rights");
-        }
-        boolean flag=false;
-        for(User user1:userList){
-            if(user1==user){
-                flag=true;
-                break;
+        try {
+            if(!groupHashMap.containsKey(group.getName())){
+              throw new Exception("Group does not exist");
             }
+            List<User> userList=groupUserHashMap.get(group);
+             if(approver!=userList.get(0)){
+                throw new Exception("Approver does not have rights");
+             }
+            boolean flag=false;
+            for(User user1:userList){
+                if(user1==user){
+                  flag=true;
+                  break;
+                }
+            }
+            if(flag==false){
+                 throw new Exception("User is not a participant");
+            }
+            User user1=userList.get(0);
+            userList.add(user1);
+            userList.remove(0);
+            return "SUCCESS";
         }
-        if(flag==false){
-            throw new Exception("User is not a participant");
+        catch (Exception e){
+            return null;
         }
-        User user1=userList.get(0);
-        userList.add(user1);
-        userList.remove(0);
-        return "SUCCESS";
     }
 
     public int removeUser(User user)throws Exception {
-        boolean flag=false,isAdmin=false;
-        Group group=new Group();
-        for(Group group1:groupUserHashMap.keySet()){
-            List<User> userList=groupUserHashMap.get(group1);
-            for(User user1:userList){
-                if(user1==user){
-                    flag=true;
-                    if(userList.get(0)==user){
-                        isAdmin=true;
+        try {
+            boolean flag=false,isAdmin=false;
+            Group group=new Group();
+            for(Group group1:groupUserHashMap.keySet()){
+                List<User> userList=groupUserHashMap.get(group1);
+                for(User user1:userList){
+                    if(user1==user){
+                        flag=true;
+                        if(userList.get(0)==user){
+                            isAdmin=true;
+                        }
+                        group=group1;
                     }
-                    group=group1;
                 }
             }
-        }
-        if(!flag){
-            throw new Exception("User not found");
-        }
-        if(isAdmin){
-            throw new Exception("Cannot remove admin");
-        }
-        if(!isAdmin){
-            List<User> userList=groupUserHashMap.get(group);
-            userList.remove(user);
+            if(!flag){
+                throw new Exception("User not found");
+            }
+            if(isAdmin){
+                throw new Exception("Cannot remove admin");
+            }
+            if(!isAdmin){
+                List<User> userList=groupUserHashMap.get(group);
+                userList.remove(user);
 
-            groupUserHashMap.put(group,userList);
-            userHashMap.remove(group);
+                groupUserHashMap.put(group,userList);
+                userHashMap.remove(group);
+            }
+            return groupUserHashMap.get(group).size();
         }
-        return groupUserHashMap.get(group).size();
+        catch (Exception e){
+            return Integer.parseInt(null);
+        }
     }
 
     public void setGroupHashMap(HashMap<String, Group> groupHashMap) {
