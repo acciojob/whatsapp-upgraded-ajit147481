@@ -25,19 +25,24 @@ public class WhatsappRepository {
             this.groupMessageHashMap=groupMessageHashMap;
     }
     public String createUser(String name, String mobile)throws Exception {
-        User user=new User(name,mobile);
-        if(userHashMap.containsKey(mobile)){
-            throw new Exception("User already exists");
+        try{
+             User user=new User(name,mobile);
+             if(userHashMap.containsKey(mobile)){
+                throw new Exception("User already exists");
+             }
+            userHashMap.put(mobile,user);
+            return "SUCCESS";
         }
-        userHashMap.put(mobile,user);
-        return "SUCCESS";
+        catch (Exception e){
+            return null;
+        }
     }
 
     public Group createGroup(List<User> users) {
         Group group=new Group();
         group.setNumberOfParticipants(users.size());
         if(users.size()==2){
-            group.setName(users.get(2).getName());
+            group.setName(users.get(1).getName());
         }else{
             group.setName("Group "+users.size());
         }
